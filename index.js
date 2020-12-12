@@ -4,10 +4,12 @@ const port = 3000
 const path = require("path");
 const sqlite3 = require("sqlite3").verbose();
 
+
 // Server configuration
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
-
+app.use(express.static("public"));
+app.use(express.urlencoded({ extended: false })); // <--- middleware configuration
 
 // Connection to the SQlite database
 const db_name = path.join(__dirname, "data", "grocerystore.db");
@@ -85,5 +87,16 @@ app.get("/edit/:id", (req, res) => {
   db.get(sql, id, (err, row) => {
     // if (err) ...
     res.render("edit", { model: row });
+  });
+});
+
+// POST edit 5
+app.post("/edit/:id", (req, res) => {
+  const id = req.params.id;
+  const Products = [req.body.Name, req.body.Price, req.body.Quantity, id];
+  const sql = "UPDATE Products SET Name = ?, Price = ?, Quantity = ? WHERE (Product_ID = ?)";
+  db.run(sql, Products, err => {
+    // if (err) ...
+    res.redirect("/items");
   });
 });
