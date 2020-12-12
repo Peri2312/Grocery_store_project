@@ -79,6 +79,20 @@ app.get('/', (req, res) => {
   });
 
 
+  // GET create
+app.get("/create", (req, res) => {
+  res.render("create", { model: {} });
+});
+
+// POST /create
+app.post("/create", (req, res) => {
+  const sql = "INSERT INTO Products (Name, Price, Quantity) VALUES (?, ?, ?)";
+  const Products = [req.body.Name, req.body.Price, req.body.Quantity];
+  db.run(sql, Products, err => {
+    // if (err) ...
+    res.redirect("/items");
+  });
+});
 
    //GET edit 5
 app.get("/edit/:id", (req, res) => {
