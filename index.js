@@ -57,10 +57,20 @@ app.get('/', (req, res) => {
 
 // GET data
 
+ // app.get("/items", (req, res) => {
+   // const test = {
+     // title: "Items",
+      //items: ["Onion", "Rice", "Pom-Bread"]
+    //};
+    //res.render("items", { model: test });
+  //});
+
   app.get("/items", (req, res) => {
-    const test = {
-      title: "Items",
-      items: ["Onion", "Rice", "Pom-Bread"]
-    };
-    res.render("items", { model: test });
+    const sql = "SELECT * FROM Products ORDER BY Name"
+    db.all(sql, [], (err, rows) => {
+      if (err) {
+        return console.error(err.message);
+      }
+      res.render("items", { model: rows });
+    });
   });
