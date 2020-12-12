@@ -2,10 +2,23 @@ const express = require('express')
 const app = express()
 const port = 3000
 const path = require("path");
+const sqlite3 = require("sqlite3").verbose();
 
 // Server configuration
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
+
+
+// Connection to the SQlite database
+const db_name = path.join(__dirname, "data", "grocerystore.db");
+const db = new sqlite3.Database(db_name, err => {
+  if (err) {
+    return console.error(err.message);
+  }
+  console.log("Successful connection to the database 'apptest.db'");
+});
+
+
 
 // GET /
 app.get('/', (req, res) => {
