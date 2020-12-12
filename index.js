@@ -18,7 +18,19 @@ const db = new sqlite3.Database(db_name, err => {
   console.log("Successful connection to the database 'grocerystore.db'");
 });
 
+const sql_create = `CREATE TABLE Products (
+  Product_ID INTEGER PRIMARY KEY AUTOINCREMENT,
+  Name TEXT NOT NULL,
+  Price FLOAT NOT NULL,
+  Quantity TEXT
+);`;
 
+db.run(sql_create, err => {
+  if (err) {
+    return console.error(err.message);
+  }
+  console.log("Successful creation of the table");
+});
 
 // GET /
 app.get('/', (req, res) => {
