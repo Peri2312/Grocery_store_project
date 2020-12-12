@@ -24,7 +24,8 @@ const sql_create = `CREATE TABLE Products (
   Product_ID INTEGER PRIMARY KEY AUTOINCREMENT,
   Name TEXT NOT NULL,
   Price FLOAT NOT NULL,
-  Quantity TEXT
+  Quantity TEXT,
+  
 );`;
 
 db.run(sql_create, err => {
@@ -36,7 +37,7 @@ db.run(sql_create, err => {
 
 //// Database seeding
 const sql_insert = `INSERT INTO Products (Product_ID, Name, Price, Quantity) VALUES
-(1, 'Onion', '5', '1'),
+(1, 'Onion', '5 ', '1'),
 (2, 'Rice', '16', '3'),
 (3, 'Pom-Bread', '15', '2');`;
 db.run(sql_insert, err => {
@@ -45,6 +46,11 @@ db.run(sql_insert, err => {
   }
   console.log("Successful creation of 3 entries");
 });
+
+
+
+
+
 
 // GET /
 app.get('/', (req, res) => {
@@ -78,16 +84,14 @@ app.get('/', (req, res) => {
     });
   });
 
-
-  // GET create
-app.get("/create", (req, res) => {
-  res.render("create", { model: {} });
-});
+  app.get("/create", (req, res) => {
+    res.render("create", { model: {} });
+  });
 
 // POST /create
 app.post("/create", (req, res) => {
-  const sql = "INSERT INTO Products (Name, Price, Quantity) VALUES (?, ?, ?)";
-  const Products = [req.body.Name, req.body.Price, req.body.Quantity];
+  const sql = "INSERT INTO Products (Name, Price, Quantity, Cost) VALUES (?, ?, ?, ?)";
+  const Products = [req.body.Name, req.body.Price, req.body.Quantity,  req.body.Cost];
   db.run(sql, Products, err => {
     // if (err) ...
     res.redirect("/items");
@@ -107,8 +111,8 @@ app.get("/edit/:id", (req, res) => {
 // POST edit 5
 app.post("/edit/:id", (req, res) => {
   const id = req.params.id;
-  const Products = [req.body.Name, req.body.Price, req.body.Quantity, id];
-  const sql = "UPDATE Products SET Name = ?, Price = ?, Quantity = ? WHERE (Product_ID = ?)";
+  const Products = [req.body.Quantity, id];
+  const sql = "UPDATE Products SET  Quantity = ? WHERE (Product_ID = ?)";
   db.run(sql, Products, err => {
     // if (err) ...
     res.redirect("/items");
