@@ -32,6 +32,18 @@ db.run(sql_create, err => {
   console.log("Successful creation of the table");
 });
 
+//// Database seeding
+const sql_insert = `INSERT INTO Products (Product_ID, Name, Price, Quantity) VALUES
+(1, 'Onion', '5', '1'),
+(2, 'Rice', '16', '3'),
+(3, 'Pom-Bread', '15', '2');`;
+db.run(sql_insert, err => {
+  if (err) {
+    return console.error(err.message);
+  }
+  console.log("Successful creation of 3 entries");
+});
+
 // GET /
 app.get('/', (req, res) => {
    // res.send('Hello World!')
