@@ -65,8 +65,9 @@ app.get('/', (req, res) => {
     //res.render("items", { model: test });
   //});
 
+  //read the list of items stored in the database and display this list in the view.
   app.get("/items", (req, res) => {
-    const sql = "SELECT * FROM Products ORDER BY Name"
+    const sql = "SELECT * FROM Products ORDER BY Product_ID"
     db.all(sql, [], (err, rows) => {
       if (err) {
         return console.error(err.message);
@@ -74,3 +75,15 @@ app.get('/', (req, res) => {
       res.render("items", { model: rows });
     });
   });
+
+
+
+   //GET edit 5
+app.get("/edit/:id", (req, res) => {
+  const id = req.params.id;
+  const sql = "SELECT * FROM Products WHERE Product_ID = ?";
+  db.get(sql, id, (err, row) => {
+    // if (err) ...
+    res.render("edit", { model: row });
+  });
+});
