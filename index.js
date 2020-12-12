@@ -114,3 +114,23 @@ app.post("/edit/:id", (req, res) => {
     res.redirect("/items");
   });
 });
+
+// GET delete5
+app.get("/delete/:id", (req, res) => {
+  const id = req.params.id;
+  const sql = "SELECT * FROM Products WHERE Product_ID = ?";
+  db.get(sql, id, (err, row) => {
+    // if (err) ...
+    res.render("delete", { model: row });
+  });
+});
+
+// POST delete 5
+app.post("/delete/:id", (req, res) => {
+  const id = req.params.id;
+  const sql = "DELETE FROM Products WHERE Product_ID = ?";
+  db.run(sql, id, err => {
+    // if (err) ...
+    res.redirect("/items");
+  });
+});
