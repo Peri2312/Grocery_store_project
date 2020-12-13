@@ -90,6 +90,8 @@ app.get("/create", (req, res) => {
 // POST /create
 app.post("/create", (req, res) => {
   const sql = "INSERT INTO Products (Name, Price, Quantity, Cost) VALUES (?, ?, ?, ?)";
+  
+  const cost = req.body.Quantity * req.body.Price;
   const Products = [req.body.Name, req.body.Price, req.body.Quantity, cost];
   db.run(sql, Products, err => {
     if (err) console.log(err);
@@ -110,6 +112,7 @@ app.get("/edit/:id", (req, res) => {
 // POST edit 5
 app.post("/edit/:id", (req, res) => {
   const id = req.params.id;
+  const cost = req.body.Price * req.body.Quantity;
   const Products = [req.body.Quantity, cost, id];
   const sql = "UPDATE Products SET Quantity = ?, Cost = ? WHERE (Product_ID = ?)";
   db.run(sql, Products, err => {

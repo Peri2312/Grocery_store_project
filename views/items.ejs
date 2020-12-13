@@ -28,7 +28,12 @@
           </td>
         </tr>
       <% } %>
-     
+      <td colspan="3">Total</td>
+      <% var total = 0
+      for(const items of model) { %>
+        <% total = total + ( items.Price * items.Quantity ) %>
+        <% } %>
+      <td> <%=total%></td>
     </tbody>
   </table>
 </div>
