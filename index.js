@@ -20,12 +20,14 @@ const db = new sqlite3.Database(db_name, err => {
   console.log("Successful connection to the database 'grocerystore.db'");
 });
 
+// did not define cost while creating table
+// made qty as integer and Cost as Float and NOT NULL
 const sql_create = `CREATE TABLE Products (
   Product_ID INTEGER PRIMARY KEY AUTOINCREMENT,
   Name TEXT NOT NULL,
   Price FLOAT NOT NULL,
-  Quantity TEXT,
-  
+  Quantity INTEGER,
+  Cost FLOAT NOT NULL
 );`;
 
 db.run(sql_create, err => {
@@ -35,11 +37,13 @@ db.run(sql_create, err => {
   console.log("Successful creation of the table");
 });
 
+
+//added cost for population of db
 //// Database seeding
-const sql_insert = `INSERT INTO Products (Product_ID, Name, Price, Quantity) VALUES
-(1, 'Onion', '5 ', '1'),
-(2, 'Rice', '16', '3'),
-(3, 'Pom-Bread', '15', '2');`;
+const sql_insert = `INSERT INTO Products (Product_ID, Name, Price, Quantity, Cost) VALUES
+(1, 'Onion', 5.0, 1, 5.0),
+(2, 'Rice', 16.0, 3, 48.0),
+(3, 'Pom-Bread', 15.0, 2, 30.0);`;
 db.run(sql_insert, err => {
   if (err) {
     return console.error(err.message);
@@ -47,58 +51,53 @@ db.run(sql_insert, err => {
   console.log("Successful creation of 3 entries");
 });
 
-
-
-
-
-
 // GET /
 app.get('/', (req, res) => {
-   // res.send('Hello World!')
-   res.render("index");
-  })
-  
-  // Starting the server
-  app.listen(port, () => {
-    console.log(`Example app listening at http://localhost:${port}`)
-  })
+  // res.send('Hello World!')
+  res.render("index");
+})
+
+// Starting the server
+app.listen(port, () => {
+  console.log(`Example app listening at http://localhost:${port}`)
+})
 
 // GET data
 
- // app.get("/items", (req, res) => {
-   // const test = {
-     // title: "Items",
-      //items: ["Onion", "Rice", "Pom-Bread"]
-    //};
-    //res.render("items", { model: test });
-  //});
+// app.get("/items", (req, res) => {
+// const test = {
+// title: "Items",
+//items: ["Onion", "Rice", "Pom-Bread"]
+//};
+//res.render("items", { model: test });
+//});
 
-  //read the list of items stored in the database and display this list in the view.
-  app.get("/items", (req, res) => {
-    const sql = "SELECT * FROM Products ORDER BY Product_ID"
-    db.all(sql, [], (err, rows) => {
-      if (err) {
-        return console.error(err.message);
-      }
-      res.render("items", { model: rows });
-    });
+//read the list of items stored in the database and display this list in the view.
+app.get("/items", (req, res) => {
+  const sql = "SELECT * FROM Products ORDER BY Product_ID"
+  db.all(sql, [], (err, rows) => {
+    if (err) {
+      return console.error(err.message);
+    }
+    res.render("items", { model: rows });
   });
+});
 
-  app.get("/create", (req, res) => {
-    res.render("create", { model: {} });
-  });
+app.get("/create", (req, res) => {
+  res.render("create", { model: {} });
+});
 
 // POST /create
 app.post("/create", (req, res) => {
   const sql = "INSERT INTO Products (Name, Price, Quantity, Cost) VALUES (?, ?, ?, ?)";
-  const Products = [req.body.Name, req.body.Price, req.body.Quantity,  req.body.Cost];
+  const Products = [req.body.Name, req.body.Price, req.body.Quantity, cost];
   db.run(sql, Products, err => {
-    // if (err) ...
+    if (err) console.log(err);
     res.redirect("/items");
   });
 });
 
-   //GET edit 5
+//GET edit 5
 app.get("/edit/:id", (req, res) => {
   const id = req.params.id;
   const sql = "SELECT * FROM Products WHERE Product_ID = ?";
@@ -111,8 +110,8 @@ app.get("/edit/:id", (req, res) => {
 // POST edit 5
 app.post("/edit/:id", (req, res) => {
   const id = req.params.id;
-  const Products = [req.body.Quantity, id];
-  const sql = "UPDATE Products SET  Quantity = ? WHERE (Product_ID = ?)";
+  const Products = [req.body.Quantity, cost, id];
+  const sql = "UPDATE Products SET Quantity = ?, Cost = ? WHERE (Product_ID = ?)";
   db.run(sql, Products, err => {
     // if (err) ...
     res.redirect("/items");
